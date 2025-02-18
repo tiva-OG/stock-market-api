@@ -1,5 +1,6 @@
 import yfinance as yf
-from flask import Flask, jsonify
+from flask import Flask, jsonify,request
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -36,6 +37,7 @@ def index():
 
 @app.get("/stock/<ticker>")
 def get_stock_data(ticker: str):
+	"""Fetch stock data"""
 	stock = yf.Ticker(ticker)
 	data = stock.history(period="1d")
 
@@ -51,6 +53,34 @@ def get_stock_data(ticker: str):
 		"low": round(data["Low"][-1], 2),
 		"volume": int(data["Volume"][-1])
 	}
+
+
+@app.get("/stock/<ticker>/history")
+def get_stock_history(ticker: str):
+	"""Fetch historical stock data between start and end dates"""
+	start = request.args.get("start")
+	end = request.args.get("end")
+
+	stock = yf.Ticker(ticker)
+	start_date = datetime.strptime(start, "%Y-%m-%d").date()
+	end_date = datetime.strptime(end, "%Y-%m-%d").date()
+	data = stock.history(start=str(start_date), end=str(end_date))
+
+	if data.empty:
+		raise APITickerError("No data available for the given data range.")
+
+	history = [
+		{
+			"date": str(index.date()),
+			"open": round(row["Open"], 2),
+			"close": round(row["Close"], 2),
+			"high": round(row["High"], 2),
+			"low": round(row["Low"], 2),
+			"volume": int(row["Volume"])
+		}
+		for index, row in data.iterrows()]
+
+	return {"ticker": ticker.upper(), "history": history}
 
 
 if __name__ == "__main__":
