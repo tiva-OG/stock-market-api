@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Personalized Stock Market</title>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center; padding-top: 20px;" >STOCKS</h1>
+    <table>
+        <tr>
+            <th>Symbol</th>
+            <th>Name</th>
+            <th>Sector</th>
+            <th>Industry</th>
+        </tr>
+        {% for stock in stocks %}
+        <tr>
+            <td>
+                <a href="/stock/{{stock.ticker}}">{{stock.ticker}}</a>
+            </td>
+            <td>{{stock.fullname}}</td>
+            <td>{{stock.sector}}</td>
+            <td>{{stock.industry}}</td>
+            <td>
+                <a href="/stock/{{stock.ticker}}/history">Check History</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
+

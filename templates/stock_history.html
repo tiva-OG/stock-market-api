@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>{{ticker}} Stock History</title>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center; padding-top: 20px;" >{{ticker}} STOCK HISTORY</h1>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Open Price</th>
+            <th>Close Price</th>
+            <th>High Price</th>
+            <th>Low Price</th>
+            <th>Volume</th>
+        </tr>
+        {% for data in stock_history %}
+        <tr>
+            <td>{{data.date}}</td>
+            <td>{{data.open}}</td>
+            <td>{{data.close}}</td>
+            <td>{{data.high}}</td>
+            <td>{{data.low}}</td>
+            <td>{{data.volume}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
+
